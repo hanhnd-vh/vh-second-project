@@ -26,7 +26,12 @@ import { ConfigKey } from './../config/config-key';
                     password: configService.get<string>(
                         ConfigKey.SEQUELIZE_DATABASE_PASSWORD,
                     ),
+                    database: configService.get<string>(
+                        ConfigKey.SEQUELIZE_DATABASE_NAME,
+                    ),
                     models: [],
+                    autoLoadModels: true,
+                    synchronize: true,
                 };
             },
         }),
