@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import { HttpStatus } from '../constants';
 dotenv.config();
