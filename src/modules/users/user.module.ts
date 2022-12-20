@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Role, RoleGroup, User, UserRole, UserRoleGroup } from 'src/models';
 import { UserController } from './user.controller';
@@ -15,7 +16,7 @@ import { UserService } from './user.service';
         ]),
     ],
     controllers: [UserController],
-    providers: [UserService],
-    exports: [SequelizeModule],
+    providers: [JwtService, UserService],
+    exports: [SequelizeModule, UserService],
 })
 export class UserModule {}

@@ -9,6 +9,6 @@ import { PermissionService } from './permission.service';
     imports: [SequelizeModule.forFeature([Role, Permission, RolePermission])],
     controllers: [PermissionController],
     providers: [PermissionService],
-    exports: [SequelizeModule],
+    exports: [SequelizeModule, PermissionService],
 })
 export class PermissionModule {}

@@ -54,3 +54,5 @@ export class User extends Model<
     declare setRoles: (roleIds: number[]) => Promise<void>;
     declare setRoleGroups: (roleGroupIds: number[]) => Promise<void>;
 }
+
+export const userExcludeAttributes = ['password'];

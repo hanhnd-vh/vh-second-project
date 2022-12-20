@@ -1,3 +1,4 @@
+import { InferAttributes, InferCreationAttributes } from 'sequelize';
 import {
     AllowNull,
     AutoIncrement,
@@ -19,7 +20,10 @@ import { Role } from './role.model';
     updatedAt: 'updated_at',
     deletedAt: 'deleted_at',
 })
-export class Permission extends Model {
+export class Permission extends Model<
+    InferAttributes<Permission>,
+    InferCreationAttributes<Permission>
+> {
     @PrimaryKey
     @AutoIncrement
     @Column

@@ -1,11 +1,12 @@
-import { CanActivate, ExecutionContext } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Observable } from 'rxjs';
 import { ConfigKey } from '../config';
 import { UserToken } from '../interfaces';
 
-export abstract class TokenGuard implements CanActivate {
+@Injectable()
+export class TokenGuard implements CanActivate {
     constructor(
         private jwtService: JwtService,
         private configService: ConfigService,
@@ -17,8 +18,8 @@ export abstract class TokenGuard implements CanActivate {
 
         try {
             const token = this.getToken(request);
-            const user = this.verifyToken(token);
-            request.user = user;
+            const userToken = this.verifyToken(token);
+            Object.assign(request, userToken);
             return true;
         } catch (e) {
             return false;

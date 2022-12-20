@@ -8,4 +8,20 @@ export class PermissionService {
         @InjectModel(Role) private roleModel: typeof Role,
         @InjectModel(Permission) private permissionModel: typeof Permission,
     ) {}
+
+    async getPermissionsByRoleIds(roleIds: number[]) {
+        const permissions = await this.permissionModel.findAll({
+            include: [
+                {
+                    model: Role,
+                    attributes: ['id'],
+                    as: 'roles',
+                    where: {
+                        id: roleIds,
+                    },
+                },
+            ],
+        });
+        return permissions;
+    }
 }

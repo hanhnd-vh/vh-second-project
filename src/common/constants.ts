@@ -1,13 +1,8 @@
-import Joi from 'joi';
+import Joi from 'src/plugins/joi';
 
 export const Regex = {
     EMAIL: /^[\w-\.]+@([\w-]+\.)+[\w-]{1,255}$/,
 };
-
-export const MIN_PAGE_VALUE = 1;
-export const MIN_PAGE_LIMIT = 1;
-export const DEFAULT_PAGE_VALUE = 1;
-export const DEFAULT_PAGE_LIMIT = 10;
 
 export enum OrderDirection {
     ASC = 'ASC',
@@ -19,6 +14,13 @@ export enum OrderBy {
     CREATED_AT = 'created_at',
     UPDATED_AT = 'updated_at',
 }
+
+export const MIN_PAGE_VALUE = 1;
+export const MIN_PAGE_LIMIT = 1;
+export const DEFAULT_PAGE_VALUE = 1;
+export const DEFAULT_PAGE_LIMIT = 10;
+export const DEFAULT_ORDER_BY = OrderBy.ID;
+export const DEFAULT_ORDER_DIRECTION = OrderDirection.DESC;
 
 export const CommonListQuerySchema = {
     page: Joi.number().min(MIN_PAGE_VALUE).optional().allow(null),

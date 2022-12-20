@@ -17,6 +17,6 @@ import { RoleService } from './role.service';
     ],
     controllers: [RoleController],
     providers: [RoleService],
-    exports: [SequelizeModule],
+    exports: [SequelizeModule, RoleService],
 })
 export class RoleModule {}

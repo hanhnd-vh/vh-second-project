@@ -9,4 +9,20 @@ export class RoleService {
         @InjectModel(Role) private roleModel: typeof Role,
         @InjectModel(RoleGroup) private roleGroupModel: typeof RoleGroup,
     ) {}
+
+    async getRolesByRoleGroupIds(roleGroupIds: number[]) {
+        const permissions = await this.roleModel.findAll({
+            include: [
+                {
+                    model: RoleGroup,
+                    attributes: ['id'],
+                    as: 'roleGroups',
+                    where: {
+                        id: roleGroupIds,
+                    },
+                },
+            ],
+        });
+        return permissions;
+    }
 }
