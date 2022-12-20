@@ -1,4 +1,4 @@
-import { OrderBy, OrderDirection, Role, Permission } from './constants';
+import { OrderBy, OrderDirection } from './constants';
 
 export interface ICommonGetListQuery {
     page?: number;
