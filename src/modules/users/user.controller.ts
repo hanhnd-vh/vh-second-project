@@ -6,15 +6,14 @@ import {
     Param,
     Patch,
     Query,
-    Req,
     UseGuards,
 } from '@nestjs/common';
 import { Permission } from 'src/common/constants';
 import { Permissions } from 'src/common/decorators/permission.decorator';
+import { UserId } from 'src/common/decorators/user-id.decorator';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import { AuthorizationGuard } from 'src/common/guards/authorization.guard';
 import { SuccessResponse } from 'src/common/helper/reponses';
-import { RequestWithUser } from 'src/common/interfaces';
 import { JoiValidationPipe } from 'src/common/pipes';
 import {
     IChangeUserPasswordBody,
@@ -52,9 +51,9 @@ export class UserController {
     }
 
     @Get('/profile')
-    async getUserSelfProfile(@Req() request: RequestWithUser) {
+    async getUserSelfProfile(@UserId() userId: number) {
         try {
-            const user = await this.userService.getUserById(request.userId);
+            const user = await this.userService.getUserById(userId);
             return new SuccessResponse(user);
         } catch (error) {
             throw error;
@@ -64,15 +63,12 @@ export class UserController {
     @Patch('/profile')
     @Permissions(Permission.UPDATE_USER_PROFILE)
     async updateUserSelfProfile(
-        @Req() request: RequestWithUser,
+        @UserId() userId: number,
         @Body(new JoiValidationPipe(updateUserProfileSchema))
         body: IUpdateUserBody,
     ) {
         try {
-            const user = await this.userService.updateUserProfile(
-                request.userId,
-                body,
-            );
+            const user = await this.userService.updateUserProfile(userId, body);
             return new SuccessResponse(user);
         } catch (error) {
             throw error;
@@ -82,13 +78,13 @@ export class UserController {
     @Patch('/profile/change-password')
     @Permissions(Permission.CHANGE_PASSWORD)
     async updateUserPassword(
-        @Req() request: RequestWithUser,
+        @UserId() userId: number,
         @Body(new JoiValidationPipe(updateUserPasswordSchema))
         body: IChangeUserPasswordBody,
     ) {
         try {
             const user = await this.userService.updateUserPassword(
-                request.userId,
+                userId,
                 body,
             );
             return new SuccessResponse(user);
@@ -111,15 +107,12 @@ export class UserController {
     @Patch('/:id/change-roles')
     @Permissions(Permission.CHANGE_USER_ROLES)
     async updateUserRoles(
-        @Req() request: RequestWithUser,
+        @Param('id') userId: number,
         @Body(new JoiValidationPipe(updateUserRolesSchema))
         body: IChangeUserRolesBody,
     ) {
         try {
-            const user = await this.userService.updateUserRoles(
-                request.userId,
-                body,
-            );
+            const user = await this.userService.updateUserRoles(userId, body);
             return new SuccessResponse(user);
         } catch (error) {
             throw error;
@@ -129,13 +122,13 @@ export class UserController {
     @Patch('/:id/change-role-groups')
     @Permissions(Permission.CHANGE_USER_ROLES)
     async updateUserRoleGroups(
-        @Req() request: RequestWithUser,
+        @Param('id') userId: number,
         @Body(new JoiValidationPipe(updateUserRoleGroupsSchema))
         body: IChangeUserRoleGroupsBody,
     ) {
         try {
             const user = await this.userService.updateUserRoleGroups(
-                request.userId,
+                userId,
                 body,
             );
             return new SuccessResponse(user);
