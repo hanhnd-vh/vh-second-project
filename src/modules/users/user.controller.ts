@@ -15,6 +15,7 @@ import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import { AuthorizationGuard } from 'src/common/guards/authorization.guard';
 import { SuccessResponse } from 'src/common/helper/reponses';
 import { RequestWithUser } from 'src/common/interfaces';
+import { JoiValidationPipe } from 'src/common/pipes';
 import {
     IChangeUserPasswordBody,
     IChangeUserRoleGroupsBody,
@@ -23,6 +24,13 @@ import {
     IUpdateUserBody,
 } from './user.interface';
 import { UserService } from './user.service';
+import {
+    updateUserPasswordSchema,
+    updateUserProfileSchema,
+    updateUserRoleGroupsSchema,
+    updateUserRolesSchema,
+    userGetListQuerySchema,
+} from './user.validator';
 
 @Controller('/users')
 @UseGuards(AuthenticationGuard, AuthorizationGuard)
@@ -31,7 +39,10 @@ export class UserController {
 
     @Get('/')
     @Permissions(Permission.READ_USER)
-    async getUserList(@Query() query: IGetUserListQuery) {
+    async getUserList(
+        @Query(new JoiValidationPipe(userGetListQuerySchema))
+        query: IGetUserListQuery,
+    ) {
         try {
             const users = await this.userService.getUserList(query);
             return new SuccessResponse(users);
@@ -54,7 +65,8 @@ export class UserController {
     @Permissions(Permission.UPDATE_USER_PROFILE)
     async updateUserSelfProfile(
         @Req() request: RequestWithUser,
-        @Body() body: IUpdateUserBody,
+        @Body(new JoiValidationPipe(updateUserProfileSchema))
+        body: IUpdateUserBody,
     ) {
         try {
             const user = await this.userService.updateUserProfile(
@@ -71,7 +83,8 @@ export class UserController {
     @Permissions(Permission.CHANGE_PASSWORD)
     async updateUserPassword(
         @Req() request: RequestWithUser,
-        @Body() body: IChangeUserPasswordBody,
+        @Body(new JoiValidationPipe(updateUserPasswordSchema))
+        body: IChangeUserPasswordBody,
     ) {
         try {
             const user = await this.userService.updateUserPassword(
@@ -95,11 +108,12 @@ export class UserController {
         }
     }
 
-    @Get('/:id/change-roles')
+    @Patch('/:id/change-roles')
     @Permissions(Permission.CHANGE_USER_ROLES)
     async updateUserRoles(
         @Req() request: RequestWithUser,
-        @Body() body: IChangeUserRolesBody,
+        @Body(new JoiValidationPipe(updateUserRolesSchema))
+        body: IChangeUserRolesBody,
     ) {
         try {
             const user = await this.userService.updateUserRoles(
@@ -112,11 +126,12 @@ export class UserController {
         }
     }
 
-    @Get('/:id/change-role-groups')
+    @Patch('/:id/change-role-groups')
     @Permissions(Permission.CHANGE_USER_ROLES)
     async updateUserRoleGroups(
         @Req() request: RequestWithUser,
-        @Body() body: IChangeUserRoleGroupsBody,
+        @Body(new JoiValidationPipe(updateUserRoleGroupsSchema))
+        body: IChangeUserRoleGroupsBody,
     ) {
         try {
             const user = await this.userService.updateUserRoleGroups(

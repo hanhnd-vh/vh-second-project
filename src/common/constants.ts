@@ -78,3 +78,15 @@ export enum Permission {
     UPDATE_ROLE_GROUP = 'UPDATE_ROLE_GROUP',
     DELETE_ROLE_GROUP = 'DELETE_ROLE_GROUP',
 }
+
+export const CommonGetListQuerySchema = {
+    page: Joi.number().min(MIN_PAGE_VALUE).optional().allow(null),
+    limit: Joi.number().min(MIN_PAGE_LIMIT).optional().allow(null),
+    keyword: Joi.string().optional().allow(null, ''),
+    orderDirection: Joi.string()
+        .valid(...Object.values(OrderDirection))
+        .optional(),
+    orderBy: Joi.string()
+        .valid(...Object.values(OrderBy))
+        .optional(),
+};
