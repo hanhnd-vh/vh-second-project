@@ -9,7 +9,10 @@ import {
     Req,
     UseGuards,
 } from '@nestjs/common';
-import { TokenGuard } from 'src/common/guards/token.guard';
+import { Permission } from 'src/common/constants';
+import { Permissions } from 'src/common/decorators/permission.decorator';
+import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
+import { AuthorizationGuard } from 'src/common/guards/authorization.guard';
 import { SuccessResponse } from 'src/common/helper/reponses';
 import { RequestWithUser } from 'src/common/interfaces';
 import {
@@ -22,11 +25,12 @@ import {
 import { UserService } from './user.service';
 
 @Controller('/users')
-@UseGuards(TokenGuard)
+@UseGuards(AuthenticationGuard, AuthorizationGuard)
 export class UserController {
     constructor(private userService: UserService) {}
 
     @Get('/')
+    @Permissions(Permission.READ_USER)
     async getUserList(@Query() query: IGetUserListQuery) {
         try {
             const users = await this.userService.getUserList(query);
@@ -47,6 +51,7 @@ export class UserController {
     }
 
     @Patch('/profile')
+    @Permissions(Permission.UPDATE_USER_PROFILE)
     async updateUserSelfProfile(
         @Req() request: RequestWithUser,
         @Body() body: IUpdateUserBody,
@@ -63,6 +68,7 @@ export class UserController {
     }
 
     @Patch('/profile/change-password')
+    @Permissions(Permission.CHANGE_PASSWORD)
     async updateUserPassword(
         @Req() request: RequestWithUser,
         @Body() body: IChangeUserPasswordBody,
@@ -79,6 +85,7 @@ export class UserController {
     }
 
     @Get('/:id')
+    @Permissions(Permission.READ_USER)
     async getUserDetail(@Param('id') id: number) {
         try {
             const user = await this.userService.getUserById(id);
@@ -89,6 +96,7 @@ export class UserController {
     }
 
     @Get('/:id/change-roles')
+    @Permissions(Permission.CHANGE_USER_ROLES)
     async updateUserRoles(
         @Req() request: RequestWithUser,
         @Body() body: IChangeUserRolesBody,
@@ -105,6 +113,7 @@ export class UserController {
     }
 
     @Get('/:id/change-role-groups')
+    @Permissions(Permission.CHANGE_USER_ROLES)
     async updateUserRoleGroups(
         @Req() request: RequestWithUser,
         @Body() body: IChangeUserRoleGroupsBody,
@@ -121,6 +130,7 @@ export class UserController {
     }
 
     @Delete('/:id')
+    @Permissions(Permission.DELETE_USER)
     async deleteUser(@Param('id') id: number) {
         try {
             const result = await this.userService.deleteUser(id);

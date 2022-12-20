@@ -6,7 +6,7 @@ import { ConfigKey } from '../config';
 import { UserToken } from '../interfaces';
 
 @Injectable()
-export class TokenGuard implements CanActivate {
+export class AuthenticationGuard implements CanActivate {
     constructor(
         private jwtService: JwtService,
         private configService: ConfigService,
@@ -21,8 +21,8 @@ export class TokenGuard implements CanActivate {
             const userToken = this.verifyToken(token);
             Object.assign(request, userToken);
             return true;
-        } catch (e) {
-            return false;
+        } catch (error) {
+            throw error;
         }
     }
 

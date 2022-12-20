@@ -1,4 +1,4 @@
-import { OrderBy, OrderDirection } from './constants';
+import { OrderBy, OrderDirection, Role, Permission } from './constants';
 
 export interface ICommonGetListQuery {
     page?: number;
@@ -17,6 +17,6 @@ export interface UserToken {
 export interface RequestWithUser extends Request {
     userId: number;
     username: string;
-    roles?: number[];
-    permissions?: number[];
+    roles?: string[];
+    permissions?: string[];
 }

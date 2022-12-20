@@ -52,12 +52,12 @@ export enum HttpStatus {
     SERVICE_UNAVAILABLE = 503,
 }
 
-export enum Roles {
+export enum Role {
     ADMIN = 'ADMIN',
     USER = 'USER',
 }
 
-export enum Permissions {
+export enum Permission {
     // User
     CREATE_USER = 'CREATE_USER',
     READ_USER = 'READ_USER',
