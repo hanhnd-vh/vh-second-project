@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Role, User } from 'src/models';
+import { Permission, Role } from 'src/models';
 
 @Injectable()
-export class AuthService {
+export class PermissionService {
     constructor(
-        @InjectModel(User) private userModel: typeof User,
         @InjectModel(Role) private roleModel: typeof Role,
+        @InjectModel(Permission) private permissionModel: typeof Permission,
     ) {}
 }
