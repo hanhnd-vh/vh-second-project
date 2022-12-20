@@ -9,6 +9,9 @@ import {
     Query,
     UseGuards,
 } from '@nestjs/common';
+import { Permission, Role } from 'src/common/constants';
+import { Permissions } from 'src/common/decorators/permission.decorator';
+import { Roles } from 'src/common/decorators/role.decorator';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import { AuthorizationGuard } from 'src/common/guards/authorization.guard';
 import { JoiValidationPipe } from 'src/common/pipes';
@@ -33,6 +36,7 @@ export class RoleController {
     constructor(private roleService: RoleService) {}
 
     @Post('/')
+    @Permissions(Permission.CREATE_ROLE)
     async createRole(
         @Body(new JoiValidationPipe(createRoleSchema)) body: ICreateRoleBody,
     ) {
@@ -45,6 +49,7 @@ export class RoleController {
     }
 
     @Get('/')
+    @Permissions(Permission.READ_ROLE)
     async getRoleList(
         @Query(new JoiValidationPipe(roleGetListQuerySchema))
         query: IGetRoleListQuery,
@@ -58,6 +63,7 @@ export class RoleController {
     }
 
     @Get('/:id')
+    @Permissions(Permission.READ_ROLE)
     async getRoleDetail(@Param('id') id: number) {
         try {
             const role = await this.roleService.getRoleById(id);
@@ -68,6 +74,7 @@ export class RoleController {
     }
 
     @Patch('/:id')
+    @Permissions(Permission.UPDATE_ROLE)
     async updateRole(
         @Param('id') id: number,
         @Body(new JoiValidationPipe(updateRoleSchema)) body: IUpdateRoleBody,
@@ -81,6 +88,7 @@ export class RoleController {
     }
 
     @Patch('/:id/change-permissions')
+    @Roles(Role.ADMIN)
     async changeRolePermissions(
         @Param('id') id: number,
         @Body(new JoiValidationPipe(updateRolePermissionsSchema))
@@ -95,6 +103,7 @@ export class RoleController {
     }
 
     @Delete('/:id')
+    @Permissions(Permission.DELETE_ROLE)
     async deleteRole(@Param('id') id: number) {
         try {
             const result = await this.roleService.deleteRole(id);

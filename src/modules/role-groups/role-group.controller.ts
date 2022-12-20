@@ -7,7 +7,13 @@ import {
     Patch,
     Post,
     Query,
+    UseGuards,
 } from '@nestjs/common';
+import { Permission, Role } from 'src/common/constants';
+import { Permissions } from 'src/common/decorators/permission.decorator';
+import { Roles } from 'src/common/decorators/role.decorator';
+import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
+import { AuthorizationGuard } from 'src/common/guards/authorization.guard';
 import { SuccessResponse } from 'src/common/helper/reponses';
 import { JoiValidationPipe } from 'src/common/pipes';
 import {
@@ -25,10 +31,12 @@ import {
 } from './role-group.validator';
 
 @Controller('/role-groups')
+@UseGuards(AuthenticationGuard, AuthorizationGuard)
 export class RoleGroupController {
     constructor(private roleGroupService: RoleGroupService) {}
 
     @Post('/')
+    @Permissions(Permission.CREATE_ROLE_GROUP)
     async createRoleGroup(
         @Body(new JoiValidationPipe(createRoleGroupSchema))
         body: ICreateRoleGroupBody,
@@ -42,6 +50,7 @@ export class RoleGroupController {
     }
 
     @Get('/')
+    @Permissions(Permission.READ_ROLE_GROUP)
     async getRoleGroupList(
         @Query(new JoiValidationPipe(roleGroupGetListQuerySchema))
         query: IGetRoleGroupListQuery,
@@ -57,6 +66,7 @@ export class RoleGroupController {
     }
 
     @Get('/:id')
+    @Permissions(Permission.READ_ROLE_GROUP)
     async getRoleGroupDetail(@Param('id') id: number) {
         try {
             const roleGroup = await this.roleGroupService.getRoleGroupById(id);
@@ -67,6 +77,7 @@ export class RoleGroupController {
     }
 
     @Patch('/:id')
+    @Permissions(Permission.UPDATE_ROLE_GROUP)
     async updateRoleGroup(
         @Param('id') id: number,
         @Body(new JoiValidationPipe(updateRoleGroupSchema))
@@ -84,6 +95,7 @@ export class RoleGroupController {
     }
 
     @Patch('/:id/change-roles')
+    @Roles(Role.ADMIN)
     async changeRoleGroupPermissions(
         @Param('id') id: number,
         @Body(new JoiValidationPipe(updateRoleGroupRolesSchema))
@@ -101,6 +113,7 @@ export class RoleGroupController {
     }
 
     @Delete('/:id')
+    @Permissions(Permission.DELETE_ROLE_GROUP)
     async deleteRoleGroup(@Param('id') id: number) {
         try {
             const result = await this.roleGroupService.deleteRoleGroup(id);
