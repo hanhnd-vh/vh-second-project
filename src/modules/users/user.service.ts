@@ -6,7 +6,7 @@ import {
     DEFAULT_PAGE_LIMIT,
     DEFAULT_PAGE_VALUE,
 } from 'src/common/constants';
-import { Role, RoleGroup, User } from 'src/models';
+import { Role, RoleGroup, User, UserGroup } from 'src/models';
 import { userExcludeAttributes } from 'src/models/user.model';
 import { hash } from 'src/plugins/bcrypt';
 import {
@@ -19,11 +19,7 @@ import {
 
 @Injectable()
 export class UserService {
-    constructor(
-        @InjectModel(User) private userModel: typeof User,
-        @InjectModel(Role) private roleModel: typeof Role,
-        @InjectModel(RoleGroup) private roleGroupModel: typeof RoleGroup,
-    ) {}
+    constructor(@InjectModel(User) private userModel: typeof User) {}
 
     private readonly logger = new Logger(UserService.name);
 
@@ -149,6 +145,69 @@ export class UserService {
             return 'OK';
         } catch (error) {
             this.logger.error('Error at service deleteUser: ' + error);
+            throw error;
+        }
+    }
+
+    async checkExistedUserIds(userIds: number[]) {
+        try {
+            const existedUserList = await this.userModel.findAll({
+                where: {
+                    id: userIds,
+                },
+            });
+            return existedUserList.length === userIds.length;
+        } catch (error) {
+            this.logger.error('Error at service checkExistedUserIds: ' + error);
+            throw error;
+        }
+    }
+
+    async getUserMentees(userId: number) {
+        try {
+            const user = await this.getUserById(userId);
+            if (!user.manageGroups || !user.manageGroups.length)
+                return {
+                    items: [],
+                    totalItems: 0,
+                };
+
+            const manageGroupsIds = user.manageGroups.map((group) => group.id);
+            const mentees = await this.getUsersByUserGroupIds(manageGroupsIds);
+            return mentees;
+        } catch (error) {
+            this.logger.error('Error at service getUserMentees: ' + error);
+            throw error;
+        }
+    }
+
+    async getUsersByUserGroupIds(userGroupIds: number[]) {
+        try {
+            const { rows, count } = await User.findAndCountAll({
+                include: {
+                    model: UserGroup,
+                    attributes: [],
+                    as: 'userGroups',
+                    where: {
+                        id: userGroupIds,
+                    },
+                    through: {
+                        attributes: [],
+                    },
+                },
+                attributes: {
+                    exclude: userExcludeAttributes,
+                },
+                distinct: true,
+            });
+            return {
+                items: rows,
+                totalItems: count,
+            };
+        } catch (error) {
+            this.logger.error(
+                'Error at service getUserByUserGroupIds: ' + error,
+            );
             throw error;
         }
     }

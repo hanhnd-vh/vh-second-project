@@ -8,31 +8,31 @@ import {
     Table,
 } from 'sequelize-typescript';
 import { DatabaseTableName } from './constant';
-import { RoleGroup } from './role-group.model';
-import { Role } from './role.model';
+import { UserGroup } from './user-group.model';
+import { User } from './user.model';
 
 @Table({
-    tableName: DatabaseTableName.ROLE_GROUP_ROLE,
+    tableName: DatabaseTableName.USER_GROUP_USER,
     paranoid: true,
     underscored: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
     deletedAt: 'deleted_at',
 })
-export class RoleGroupRole extends Model<
-    InferAttributes<RoleGroupRole>,
-    InferCreationAttributes<RoleGroupRole>
+export class UserGroupUser extends Model<
+    InferAttributes<UserGroupUser>,
+    InferCreationAttributes<UserGroupUser>
 > {
     @PrimaryKey
     @AutoIncrement
     @Column
     id: number;
 
-    @ForeignKey(() => RoleGroup)
+    @ForeignKey(() => UserGroup)
     @Column
-    roleGroupId: number;
+    userGroupId: number;
 
-    @ForeignKey(() => Role)
+    @ForeignKey(() => User)
     @Column
-    roleId: number;
+    userId: number;
 }

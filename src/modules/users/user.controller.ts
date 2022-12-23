@@ -104,6 +104,17 @@ export class UserController {
         }
     }
 
+    @Get('/:id/mentees')
+    @Permissions(Permission.READ_USER)
+    async getUserMentees(@Param('id') id: number) {
+        try {
+            const mentees = await this.userService.getUserMentees(id);
+            return new SuccessResponse(mentees);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     @Patch('/:id/change-roles')
     @Permissions(Permission.CHANGE_USER_ROLES)
     async updateUserRoles(

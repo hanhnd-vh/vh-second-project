@@ -1,5 +1,12 @@
 import { InferAttributes, InferCreationAttributes } from 'sequelize';
-import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
+import {
+    AutoIncrement,
+    Column,
+    ForeignKey,
+    Model,
+    PrimaryKey,
+    Table,
+} from 'sequelize-typescript';
 import { DatabaseTableName } from './constant';
 import { Role } from './role.model';
 import { User } from './user.model';
@@ -16,6 +23,11 @@ export class UserRole extends Model<
     InferAttributes<UserRole>,
     InferCreationAttributes<UserRole>
 > {
+    @PrimaryKey
+    @AutoIncrement
+    @Column
+    id: number;
+
     @ForeignKey(() => User)
     @Column
     userId: number;

@@ -1,5 +1,12 @@
 import { InferAttributes, InferCreationAttributes } from 'sequelize';
-import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
+import {
+    AutoIncrement,
+    Column,
+    ForeignKey,
+    Model,
+    PrimaryKey,
+    Table,
+} from 'sequelize-typescript';
 import { Permission } from 'src/models/permission.model';
 import { DatabaseTableName } from './constant';
 import { Role } from './role.model';
@@ -16,6 +23,11 @@ export class RolePermission extends Model<
     InferAttributes<RolePermission>,
     InferCreationAttributes<RolePermission>
 > {
+    @PrimaryKey
+    @AutoIncrement
+    @Column
+    id: number;
+
     @ForeignKey(() => Role)
     @Column
     roleId: number;
