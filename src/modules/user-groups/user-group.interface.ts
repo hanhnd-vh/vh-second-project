@@ -1,13 +1,13 @@
 import { ICommonGetListQuery } from 'src/common/interfaces';
 
-export interface IGetUserGroupListQuery extends ICommonGetListQuery {}
+export type IGetUserGroupListQuery = ICommonGetListQuery;
 
 export interface ICreateUserGroupBody {
     name: string;
     managerId?: number;
 }
 
-export interface IUpdateUserGroupBody extends Partial<ICreateUserGroupBody> {}
+export type IUpdateUserGroupBody = Partial<ICreateUserGroupBody>;
 
 export interface IChangeUserGroupUsersBody {
     userIds: number[];
